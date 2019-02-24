@@ -1,3 +1,3 @@
 # Note-Taking-App
 
-![Image of Screenshot1](https://ibb.co/hmtTQbB)
+![Image of Screenshot1](https://ibb.co/tCJcX4V)
