@@ -2,6 +2,8 @@ package felix.com.adapters;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +13,11 @@ import java.util.ArrayList;
 
 import felix.com.R;
 import felix.com.models.Note;
+import felix.com.util.Utility;
 
 public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdapter.ViewHolder> {
+
+    private static final String TAG = "NotesRecyclerAdapter";
 
     private ArrayList<Note> mNotes = new ArrayList<>();
     private OnNoteListener mOnNoteListener;
@@ -31,8 +36,17 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int i) {
-        viewHolder.timestamp.setText(mNotes.get(i).getTimestamp());
-        viewHolder.title.setText(mNotes.get(i).getTitle());
+        try {
+            String month = mNotes.get(i).getTimestamp().substring(0, 2);
+            month = Utility.getMonthFromNumber(month);
+            String year = mNotes.get(i).getTimestamp().substring(3);
+            String timestamp = month + " " + year;
+
+            viewHolder.timestamp.setText(timestamp);
+            viewHolder.title.setText(mNotes.get(i).getTitle());
+        } catch (NullPointerException e) {
+            Log.e(TAG, "onBindViewHolder: NullPointerException: " + e.getMessage());
+        }
     }
 
     @Override

@@ -5,7 +5,9 @@ import android.content.Context;
 import java.util.List;
 
 import androidx.lifecycle.LiveData;
+import felix.com.async.DeleteAsyncTask;
 import felix.com.async.InsertAsyncTask;
+import felix.com.async.UpdateAsyncTask;
 import felix.com.models.Note;
 
 public class NoteRepository {
@@ -21,7 +23,7 @@ public class NoteRepository {
     }
 
     public void updateNote(Note note) {
-
+        new UpdateAsyncTask(mNoteDatabase.getNoteDao()).execute(note);
     }
 
     public LiveData<List<Note>> retrieveNotesTask() {
@@ -29,6 +31,6 @@ public class NoteRepository {
     }
 
     public void deleteNoteTask(Note note){
-
+        new DeleteAsyncTask(mNoteDatabase.getNoteDao()).execute(note);
     }
 }

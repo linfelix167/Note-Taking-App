@@ -3,6 +3,8 @@ package felix.com;
 import android.app.Activity;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -15,12 +17,14 @@ import android.widget.TextView;
 
 import felix.com.models.Note;
 import felix.com.persistence.NoteRepository;
+import felix.com.util.Utility;
 
 public class NoteActivity extends AppCompatActivity implements
         View.OnTouchListener,
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        TextWatcher {
 
     private static final String TAG = "NoteActivity";
     private static final int EDIT_MODE_ENABLED = 1;
@@ -76,12 +80,18 @@ public class NoteActivity extends AppCompatActivity implements
         mCheck.setOnClickListener(this);
         mViewTitle.setOnClickListener(this);
         mBackArrow.setOnClickListener(this);
+        mEditTitle.addTextChangedListener(this);
     }
 
     private boolean getIncomingIntent() {
         if (getIntent().hasExtra("selected_note")) {
             mInitialNote = getIntent().getParcelableExtra("selected_note");
-            mFinalNote = getIntent().getParcelableExtra("selected_note");
+
+            mFinalNote = new Note();
+            mFinalNote.setTitle(mInitialNote.getTitle());
+            mFinalNote.setContent(mInitialNote.getContent());
+            mFinalNote.setTimestamp(mInitialNote.getTimestamp());
+            mFinalNote.setId(mInitialNote.getId());
 
             mMode = EDIT_MODE_DISABLED;
             mIsNewNote = false;
@@ -97,8 +107,12 @@ public class NoteActivity extends AppCompatActivity implements
         if (mIsNewNote) {
             saveNewNote();
         } else {
-
+            updateNote();
         }
+    }
+
+    private void updateNote() {
+        mNoteRepository.updateNote(mFinalNote);
     }
 
     private void saveNewNote() {
@@ -150,11 +164,12 @@ public class NoteActivity extends AppCompatActivity implements
         if (temp.length() > 0) {
             mFinalNote.setTitle(mEditTitle.getText().toString());
             mFinalNote.setContent(mLinedEditText.getText().toString());
-            String timestamp = "Jan 2019";
+            String timestamp = Utility.getCurrentTimestamp();
             mFinalNote.setTimestamp(timestamp);
 
             if (!mFinalNote.getContent().equals(mInitialNote.getContent())
                 || !mFinalNote.getTitle().equals(mInitialNote.getTitle())) {
+                Log.d(TAG, "disableEditMode: called");
                 saveChanges();
             }
         }
@@ -282,5 +297,20 @@ public class NoteActivity extends AppCompatActivity implements
         if (mMode == EDIT_MODE_ENABLED) {
             enableEditMode();
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+        mViewTitle.setText(charSequence.toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }
