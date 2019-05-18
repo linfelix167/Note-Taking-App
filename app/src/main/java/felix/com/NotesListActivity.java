@@ -70,17 +70,6 @@ public class NotesListActivity extends AppCompatActivity implements
         });
     }
 
-//    private void insertFakeNotes() {
-//        for (int i = 0; i < 1000; i++) {
-//            Note note = new Note();
-//            note.setTitle("title # " + i);
-//            note.setContent("content # " + i);
-//            note.setTimestamp("Jan 2019");
-//            mNotes.add(note);
-//        }
-//        mNoteRecyclerAdapter.notifyDataSetChanged();
-//    }
-
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
